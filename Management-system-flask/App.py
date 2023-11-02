@@ -16,12 +16,29 @@ def index():
 
 
 @app.route('/Add_employee')
-def index():
+def Add_employee():
     return render_template('Add_employee.html')
 
 @app.route('/view_employee')
-def index():
-    return render_template('Add_employee.html')
+def view_employee():
+    return render_template('view_employee.html')
+
+@app.route('/update_employee')
+def update_employee():
+    return render_template('delete_employee.html')
+
+@app.route('/delete_employee')
+def delete_employee():
+    return render_template('delete_employee.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+
+def logout():
+    return render_template('home.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
