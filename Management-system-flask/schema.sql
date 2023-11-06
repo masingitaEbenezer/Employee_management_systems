@@ -1,0 +1,6 @@
+-- Active: 1698825337368@@127.0.0.1@3306@employee
+
+CREATE  TABLE user( PRIMARY KEY  AUTO_INCREMENT (Id INT(13)) , Name VARCHAR(1000),Email TEXT(1000),Admin BOOLEAN NOT NULL default '0');
+
+
+CREATE  TABLE employee(PRIMARY KEY  AUTO_INCREMENT (Id INT(13)), Name VARCHAR(1000),Email TEXT(1000),Phone_no INT(12),address TEXT(1000),Position TEXT(1000),Salary BIGINT(20),Start_date DATE  );
