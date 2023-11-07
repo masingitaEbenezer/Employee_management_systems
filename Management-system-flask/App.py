@@ -1,87 +1,119 @@
-from flask import Flask,url_for,request
+from flask import Flask,url_for,request,redirect
 from flask.templating import render_template
-from flask_bootstrap import Bootstrap
+import os
 from os import system
-from flask_mysqldb import MySQL
+import psycopg2
 
+
+# conn = psycopg2.connect(host='localhost',
+#                             database='employee',
+#                             user='postgres',
+#                             port=5430,
+#                             password='')
+# cursor = conn.cursor()
+# cursor.execute("select * from users " )
+
+# books = cursor.fetchall()
+# print(books)
 
 app = Flask(__name__)
 def create_app():
-  app = Flask(__name__)
-  Bootstrap(app)
+ return app
 
-  return app
 
-#creating routes
+def get_db_connection():
+    conn = psycopg2.connect(host='localhost',
+                            database='flask_db',
+                            user=os.environ['DB_USERNAME'],
+                            password=os.environ['DB_PASSWORD'])
+    return conn
+
+
+
 @app.route('/')
 def index():
     return render_template('home.html')
 
+# ...
+
+@app.route('/create/', methods=('GET', 'POST'))
+def addEmployee():
+    if request.method == 'POST':
+        Id = request.form['Id']
+        full_name = request.form['full_name']
+        Email = request.form['email']
+        phone_no= request.form['phone_no']
+        Address = request.form['address']
+        Position= request.form['position']
+        Salary= request.form['salary']
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO Employees (Id,full_name,Email,phone_no,Address,Position,Salary)'
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    (Id,full_name,Email,phone_no,Address,Position,Salary))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('index'))
+
+    return render_template('Add_employee.html')
  
 @app.route('/form')
 def form():
     return render_template('form.html')
 
-@app.route('/login')
-def login():
-    if request.method == 'GET':
-        return "Login via the login Form"
-     
-    if request.method == 'POST':
-        name = request.form['name']
-        age = request.form['age']
-        cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO info_table VALUES(%s,%s)''',(name,age))
-        mysql.connection.commit()
-        cursor.close()
-        return f"Done!!"
+
+
+
+
+# @app.route('/')
+# def index():
+#     conn = get_db_connection()
+#     cur = conn.cursor()
+#     cur.execute('SELECT * FROM books;')
+#     books = cur.fetchall()
+#     cur.close()
+#     conn.close()
+#     return render_template('index.html')
+
+# from flask import Flask
+
+# app = Flask(__name__)
+
+# # @app.route("/")
+# # An object of Flask class is our WSGI application.
+# from flask import Flask
  
-app.run(host='localhost', port=5000)
-
-   
-
-
-@app.route('/Add_employee')
-def Add_employee():
-    return render_template('Add_employee.html')
-
-@app.route('/view_employee')
-def view_employee():
-    return render_template('view_employee.html')
-
-@app.route('/update_employee')
-def update_employee():
-    return render_template('delete_employee.html')
-
-@app.route('/delete_employee')
-def delete_employee():
-    return render_template('delete_employee.html')
-
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
-
-
-def logout():
-    return render_template('home.html')
-
+# # Flask constructor takes the name of 
+# # current module (__name__) as argument.
+# app = Flask(__name__)
+ 
+# # The route() function of the Flask class is a decorator, 
+# # which tells the application which URL should call 
+# # the associated function.
+# @app.route('/')
+# # ‘/’ URL is bound with hello_world() function.
+# def hello_world():
+#     # if request.method == 'POST':
+#     #     name = request.form['name']
+#     #     age = request.form['age']
+#         conn = psycopg2.connect(host='localhost',
+#                             database='employee',
+#                             user=os.environ['postgres'],
+#                             port=5430,
+#                             password=os.environ[''])
+#         cursor = conn.cursor()
+#         cursor.execute("select * from users where name=%s", )
+#         books = cursor.fetchall()
+        
+#         conn.commit()
+#         cursor.close()
+#         return render_template('index.html', books="books")
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
-@app.route('/login', methods = ['POST', 'GET'])
-def login():
-    if request.method == 'GET':
-        return "Login via the login Form"
-     
-    if request.method == 'POST':
-        name = request.form['name']
-        age = request.form['age']
-        cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO info_table VALUES(%s,%s)''',(name,age))
-        mysql.connection.commit()
-        cursor.close()
-        return f"Done!!"
- 
-app.run(host='localhost', port=5000)
-
+   app.run(debug=True)
+#     # run() method of Flask class runs the application 
+#     # on the local development server.
+#     app.run()
+# # main driver function
