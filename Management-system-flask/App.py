@@ -49,19 +49,42 @@ def create():
         conn=db_conn()
         cur=conn.cursor()
         id = request.form.get('id')
-        full_name = request.form.get('inputfullname')
-        email = request.form.get('inputEmail4')
-        phone_no= request.form.get('inputphonenumber')
-        position= request.form.get('inputposition')
-        salary= request.form.get('inputsalary')
-        address = request.form.get('inputAddress')
+        full_name = request.form.get('fullname')
+        email = request.form.get('email')
+        phone_no= request.form.get('phonenor')
+        position= request.form.get('position')
+        salary= request.form.get('salary')
+        address = request.form.get('address')
 
         cur.execute('''INSERT INTO employee(id,full_name,email,phone_no,position,salary,address) VALUES (%s,%s,%s,%s,%s,%s,%s)''',(id,full_name,email,phone_no,position,salary,address))
         conn.commit()
         return render_template('dashboard.html')
+    
+@app.route('/update',methods=['POST'])
+def update():
+    conn=db_conn()
+    cur=conn.cursor()
+    id = request.form.get('id')
+    full_name = request.form.get('fullname')
+    email = request.form.get('email')
+    phone_no= request.form.get('phonenor')
+    position= request.form.get('position')
+    salary= request.form.get('salary')
+    address = request.form.get('address')
+    cur.execute('''UPDATE employee SET full_name=%s,email=%s,phone_no=%s,position=%s,salary=%s,address=%s WHERE id=%s''',(id,full_name,email,phone_no,position,salary,address))
+    conn.commit()
+    cur.close()
+    conn.close()
 
+@app.route('/delete')
+def delete():
+  conn=db_conn()
+  cur=conn.cursor()
 
-
+#   get data from the form
+  id=request.form.get[id]
+#   delete data from the table
+  cur.execute('''DELETE FROM employee WHERE id=%s''',(id))
 if __name__ == '__main__':
  app.run(debug=True, port=3507)
 
